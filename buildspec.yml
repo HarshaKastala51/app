@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Logging in to Docker Hub..."
+      - docker login -u harshakastala -p Harsha@51
+
+  build:
+    commands:
+      - echo "Building Docker image..."
+      - docker build -t harshakastala/myapp .
+
+  post_build:
+    commands:
+      - echo "Pushing Docker image..."
+      - docker push harshakastala/myapp:latest
+
+artifacts:
+  files:
+    - "**/*"
+  discard-paths: yes
+
+deploy:
+  provider: ECS
+  cluster: my-ecs-cluster
+  service: my-app-service
+  image: harshakastala/myapp:latest
+
+on_failure:
+  - echo "Error: Build failed"
